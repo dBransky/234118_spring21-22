@@ -7,29 +7,41 @@ mergedArray: .zero 32
 
 .section .text
 main:
-    movl array1,%eax
-    movl array2,%ebx
-    lea mergedArray,%ecx
-    cmp %eax,%ebx
+    lea array1,%rax
+    lea array2,%rbx
+    lea mergedArray,%rcx
+start_loop:
+    movl (%rax),%r8D
+    movl (%rbx),%r9D
+    cmp $0,%r8D
+    je assign2
+    cmp $0,%r9D
+    je assign1
+    cmp %r8D,%r9D
     je assign3
     ja assign1
     jmp assign2
 continue:
-    addl $4,%ecx
+    addq $4,%rcx
+    jmp start_loop
 assign1:
-    movl %eax,(%ecx)
-    addl $4,%eax
+    movl %r8D,(%rcx)
+    cmp $0,%r8D
+    je finish
+    addq $4,%rax
     jmp continue
 assign2:
-    movl %ebx,(%ecx)
-    addl $4,%ebx
+    movl %r9D,(%rcx)
+    cmp $0,%r9D
+    je finish
+    addq $4,%rbx
     jmp continue
 assign3:
-    movl %eax,(%ecx)
-    cmp $0,%eax
+    movl %r8D,(%rcx)
+    cmp $0,%r8D
     je finish
-    addl $4,%eax
-    addl $4,%ebx
+    addq $4,%rax
+    addq $4,%rbx
     jmp continue
 finish:
     
