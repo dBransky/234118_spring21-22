@@ -1,13 +1,7 @@
-.global main
-
-.data
-destination: .quad 0x60000
-source: .quad 0x50000
-
-num: .long 0x5
+.global _start
 
 .section .text
-main:
+_start:
     cmp $0, (num)
     jg MEM_MOVE
     jmp REV_MEM_MOVE

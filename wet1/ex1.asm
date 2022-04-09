@@ -1,11 +1,7 @@
-.global main
-
-.data 
-num: .quad 0x202
-CountBits: .zero 4
+.global _start
 
 .text
-main:
+_start:
 mov $0x00000001, %rax # rax = 0x00000001
 mov $64, %rbx # rbx = 64 (amount of loops)
 mov $0x0, %ecx

@@ -1,12 +1,7 @@
-.global main
-
-.data
-array1: .long 0x1,0x2,0x4,0
-array2: .long 0x3,0
-mergedArray: .zero 32
+.global _start
 
 .section .text
-main:
+_start:
     lea array1,%rax
     lea array2,%rbx
     lea mergedArray,%rcx

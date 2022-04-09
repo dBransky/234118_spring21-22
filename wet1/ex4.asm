@@ -1,28 +1,7 @@
-.global main
-
-.data 
-Root: .quad A
-A: 
-    .quad 20
-    .quad B
-    .quad C
-B:
-    .quad 10
-    .quad 0
-    .quad D
-C:
-    .quad 26	
-    .quad 0
-    .quad 0
-D:
-    .quad 13
-    .quad 0
-    .quad 0
-
-new_node: .quad 267, 0 ,0
+.global _start
 
 .text
-main:
+_start:
     movq (new_node), %rdx # rdx = new_node.value
     cmp $0, (Root) #if (root == NULL)
     je First # go to first label.

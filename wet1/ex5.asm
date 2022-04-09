@@ -1,17 +1,7 @@
-.global main
-.data
-C: .long 3
-    .quad 0
-B: .long 2
-    .quad C
-A: .long 1
-    .quad B
-head: .quad A
-src: .long 4
-dst: .long 4
+.global _start
 
 .section .text
-main:
+_start:
     movl (head),%eax
     xor %ebx,%ebx
     xor %ecx,%ecx
