@@ -1,1 +1,35 @@
 
+.global _start
+
+.data
+arr: .short 1, 0xEA, 0x2, 0x2, 0b1010
+b: .long 0x19283746
+c: .quad 0x0404202102052021
+
+.bss
+.lcomm jk, 8
+.lcomm g_byte, 4
+
+.text
+_start:
+xor %rcx, %rcx
+movl $0x2345, %ebx
+movb $0, %bl
+
+
+xor %rax, %rax
+xor %rsi, %rsi
+add b, %rax, %rbx
+
+
+lea 2(arr), %rbx
+
+lea (arr), %rbx
+movb 3(%rbx), %al
+
+
+mov %bh, %al
+xor %al, %sil
+shr $5, %rsi
+movw -8(%rbx, %rsi, 2), %dx
+
