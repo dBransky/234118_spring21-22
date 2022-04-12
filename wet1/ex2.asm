@@ -1,13 +1,8 @@
-.global main
-
-.section .data
-source: .short 0xCAFE
-destination: .quad 0xAABBCCDD
-num: .long 0x3
+.global _start
 
 
 .section .text
-main:
+_start:
     # write your code here
     movq $source, %rax
     movq $destination, %rbx
@@ -57,6 +52,5 @@ FRONT_LOOP_HW1:
 EXIT_HW1:
     
             
-
 
 
