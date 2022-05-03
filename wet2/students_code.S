@@ -69,16 +69,36 @@ finish_count_hw2:
     syscall
     movq %rbp, %rsp
     popq %rbp
-    
-    
-    
-    
-
-    
-
   ret
-
+  
 hamming_weight:
+  pushq %rbp
+  movq %rsp, %rbp
+  xor %r8, %r8 # INDEX FOR LOOP = 0
+  xor %r9 , %r9 # COUNTER = 0
+  xor %r10, %r10 # address = 0
+  xor %r11, %r11 # INDEX FOR LOOP_8 = 0
+  movq %rdi, %r10 # address = address of codeword
+L1_HW2: 
+    xor %r11, %r11
+    movb (%r10), %cl
+    addq %r8, %r10 # address = address + INDEX
+LOOP_8_HW2:    
+    shr %cl
+    jb COUNTER_INC
+BACK_L1_HW2:
+    inc %r11    
+    cmp $8, %r11
+    jne LOOP_8_HW2
+    inc %r8
+    cmp %r8, %rsi
+    je Finish_HW2
+    jl L1_HW2
+COUNTER_INC:
+    inc %r9
+    jl BACK_L1_HW2
+Finish_HW2:    
+    movq %r9 ,%rax        
   ret
 
 negate_first_k:
@@ -107,4 +127,14 @@ finish:
   ret
 
 bring_balance_to_the_word:
+  pushq %rbp
+  movq %rsp, %rbp
+  
+  movq %rsi, %r10 # r10 = LENGTH
+  xor %r8, %r8 # I in the alogoritem
+  inc %r8
+  xor %r9, %r9 # counter = 0
+ 
+  movq %r8, %rdi
+  
   ret
