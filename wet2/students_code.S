@@ -132,9 +132,55 @@ bring_balance_to_the_word:
   
   movq %rsi, %r10 # r10 = LENGTH
   xor %r8, %r8 # I in the alogoritem
-  inc %r8
-  xor %r9, %r9 # counter = 0
+
+  xor %r9, %r9 # J in second loop
  
-  movq %r8, %rdi
-  
+L1_VER1_HW2:
+    call hamming_weight
+    add %rax, %rax # rax = amount of 1 bits * 2.
+    xor %r11, %r11 # r11 = 0
+    imul $64, %rsi, %r11 # r11 = 64 * LEN
+    cmp %r11, %rax # if (64LEN = 2AMOUNTOF1BITS)
+    je Finish_VER_HW2
+    inc %r8 # I++
+    xor %r9, %r9 # r9 = 0
+    xor %r10, %r10 # r10 = 0
+    movq %r8, %r10 # r10 = I index
+    xor %r11, %r11 # r11 = 0 = COUNTER
+L2_VER_HW2:
+     cmp %r9, %rsi # if r9 == LENGTH
+     je L1_VER1_HW2
+     cmp $0, %r10
+     je L1_VER1_HW2
+     cmp $64, %r10 # if r8 >= 64
+     jge UPDATE1_VER_HW2
+     ja UPDATE2_VER_HW2
+UPDATE1_VER_HW2:
+    pushq %rdi
+    pushq %rsi
+    addq %r11, %rdi
+    movq $64, %rsi
+    call negate_first_k
+    popq %rsi
+    popq %rdi
+    addq %r11, %rdi
+    movq %rax,(%rdi) 
+    sub $64, %r10
+    inc %r11
+    ja L2_VER_HW2
+UPDATE2_VER_HW2:
+    pushq %rdi
+    pushq %rsi
+    addq %r11, %rdi
+    movq %r10, %rsi
+    call negate_first_k
+    popq %rsi
+    popq %rdi
+    addq %r11, %rdi
+    movq %rax,(%rdi) 
+    sub %r10, %r10
+    inc %r11
+    ja L2_VER_HW2
+Finish_VER_HW2:
+    movq %r8, %rax
   ret
