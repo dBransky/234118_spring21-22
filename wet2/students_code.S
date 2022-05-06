@@ -71,6 +71,7 @@ finish_count_hw2:
     movq $3,%rax
     syscall
     popq %rax
+    shr $3,%rax
     movq %rbp, %rsp
     popq %rbp
   ret
