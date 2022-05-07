@@ -120,19 +120,34 @@ negate_first_k:
     xor %rdx,%rdx
 loop_negate:
     cmp %rcx,%rsi
-    je finish
+    je flip_num
     sal %rdx
     shr %rax
     jae got_zero
     inc %rcx
-    jl loop_negate
+    jmp loop_negate
 got_zero:
     inc %rdx
     inc %rcx
-    jl loop_negate
+    jmp loop_negate
+flip_num:
+    xor %r8,%r8
+    xor %rcx,%rcx
+loop_flip:
+    cmp %rcx,%rsi
+    je finish
+    sal %r8
+    shr %rdx
+    jb got_one
+    inc %rcx
+    jmp loop_flip
+got_one:
+    inc %r8
+    inc %rcx
+    jmp loop_flip
 finish:
     sal %cl,%rax
-    add %rax,%rdx
+    add %r8,%rax
     movq %rbp, %rsp
     popq %rbp
   ret
