@@ -6,8 +6,8 @@
 read_input:
     pushq %rbp
     movq %rsp,%rbp
-    movq %rdi,(%rbp)
     subq $8,%rsp
+    movq %rdi,-8(%rbp)
     leaq path(%rip),%rdi
     call get_path
     mov $2,%rax
@@ -18,12 +18,12 @@ read_input:
     subq $8,%rsp
 count_n_hw2:
     mov $0, %rax
-    lea -8(%rbp),%rsi
+    lea -16(%rbp),%rsi
     mov $1, %rdx
     pushq %rcx
     syscall
     popq %rcx
-    cmpb $0xa,-8(%rbp)
+    cmpb $0xa,-16(%rbp)
     je finish_count_hw2
     inc %rcx
     jmp count_n_hw2
@@ -45,7 +45,7 @@ finish_count_hw2:
     subq %r8,%rsp
     mov %rax, %rdi
     mov $0, %rax 
-    lea -8(%rbp),%rsi
+    lea -16(%rbp),%rsi
     mov %rcx, %rdx
     pushq %r8
     pushq %rcx
@@ -57,14 +57,14 @@ finish_count_hw2:
     movq $0,(%r9)
     pushq %rdi
     push %r8
-    lea -8(%rbp),%rdi
+    lea -16(%rbp),%rdi
     call atam_atol
     popq %r8
     popq %rdi
     add %r8,%rsp
     mov %rax, %rdx
     mov $0, %rax
-    movq (%rbp),%rsi
+    movq -8(%rbp),%rsi
     addq $8,%rsp
     syscall
     pushq %rdx
@@ -313,15 +313,16 @@ CON2_HW2:
 
     movq %r9, %rax
     
-    #conventions
-    movq %rbp, %rsp
-    
-    #back the orgnial values of the registers
     pop %r14
     popq %r13
     popq %r12
     popq %rbx
     popq %rbp
+    #conventions
+    
+    
+    #back the orgnial values of the registers
+    
     
     #go back to caller function
     ret
