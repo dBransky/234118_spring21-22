@@ -153,59 +153,175 @@ finish:
   ret
 
 bring_balance_to_the_word:
-
+  pushq %rbp
+  pushq %rbx
+  pushq %r12
+  pushq %r13
+  pushq %r14
+    
+  #reset all
+  xor %rdx, %rdx #rdx = 0
+  xor %rbx, %rbx #rbx = 0
+  xor %r12, %r12 #r12 = 0
+  xor %r13, %r13 #r13 = 0
   
-  movq %rsi, %r10 # r10 = LENGTH
-  xor %r8, %r8 # I in the alogoritem
+  movq %rsp,%rbp #convention
+  movq %rsi, %r13 #r13 is the LEN parameter - const!!!
+  movq %rdi, %r12 #r12 is the address (orginal) - const!!!
+  movq $8, %rbx #rbx is value 8 - const!!!
+  
+  #r10 = total of bits in the word
+  movq %rsi, %r10 
+  imul  $64, %r10, %r10 # r10 = amount of bits in the world
+  
+  #r9 = the index that will be returned
+  xor %r9, %r9 # r9 = 0
 
-  xor %r9, %r9 # J in second loop
  
-L1_VER1_HW2:
-    call hamming_weight
-    add %rax, %rax # rax = amount of 1 bits * 2.
-    xor %r11, %r11 # r11 = 0
-    imul $64, %rsi, %r11 # r11 = 64 * LEN
-    cmp %r11, %rax # if (64LEN = 2AMOUNTOF1BITS)
-    je Finish_VER_HW2
-    inc %r8 # I++
-    xor %r9, %r9 # r9 = 0
-    xor %r10, %r10 # r10 = 0
-    movq %r8, %r10 # r10 = I index
-    xor %r11, %r11 # r11 = 0 = COUNTER
-L2_VER_HW2:
-     cmp %r9, %rsi # if r9 == LENGTH
-     je L1_VER1_HW2
-     cmp $0, %r10
-     je L1_VER1_HW2
-     cmp $64, %r10 # if r8 >= 64
-     jge UPDATE1_VER_HW2
-     ja UPDATE2_VER_HW2
-UPDATE1_VER_HW2:
-    pushq %rdi
-    pushq %rsi
-    addq %r11, %rdi
-    movq $64, %rsi
-    call negate_first_k
-    popq %rsi
-    popq %rdi
-    addq %r11, %rdi
-    movq %rax,(%rdi) 
-    sub $64, %r10
-    inc %r11
-    ja L2_VER_HW2
-UPDATE2_VER_HW2:
-    pushq %rdi
-    pushq %rsi
-    addq %r11, %rdi
-    movq %r10, %rsi
-    call negate_first_k
-    popq %rsi
-    popq %rdi
-    addq %r11, %rdi
-    movq %rax,(%rdi) 
-    sub %r10, %r10
-    inc %r11
-    ja L2_VER_HW2
-Finish_VER_HW2:
-    movq %r8, %rax
-  ret
+  #Checking Label  
+  Final_Check_HW2:
+
+   #rax = 0
+   xor %rax, %rax
+   
+   #save regitser
+   pushq %rdi
+   pushq %rsi
+   pushq %r8
+   pushq %r9
+   pushq %r11
+   pushq %r10
+   
+   #ready parameters
+   movq %r12, %rdi
+   movq %r13, %rsi
+       
+   #call function
+   call hamming_weight
+   
+   #back from function
+   popq %r10
+   popq %r11
+   popq %r9
+   popq %r8
+   popq %rsi
+   popq %rdi
+   
+   #rax is the value returend
+   add %rax, %rax
+   
+   #check if is balance
+   cmp %r10, %rax
+   je Finish_Check_HW2
+   
+   
+   cmp $0, %r9
+   je Negate_HW2_TEMP
+   #check if not balance
+   movq $8, %rbx
+   xor %rdx, %rdx # rdx = 0
+   movq %r9, %rax
+   div %rbx
+   movq %r12, %rdi
+   addq %rax, %rdi
+  
+   jmp Negate_HW2_TEMP
+   
+Back_TEMP_HW2:
+   movq $8, %rbx
+   inc %r9
+   xor %rdx, %rdx # rdx = 0
+   movq %r9, %rax
+   div %rbx
+   cmp $0, %rdx
+   jg CON2_HW2
+   movq $8, %rdx
+   dec %rax
+CON2_HW2:
+   movq %r12, %rdi
+   addq %rax, %rdi
+  
+   jmp Negate_HW2
+   
+ Negate_HW2_TEMP:
+
+   #save regitser
+   pushq %rdi
+   pushq %rsi
+   pushq %r8
+   pushq %r9
+   pushq %r11
+   pushq %r10 
+   
+   #ready parameters
+   xor %r14, %r14
+   movb (%rdi), %r14b
+   movq %r14, %rdi
+   movq %rdx, %rsi
+    
+   #call function
+   call negate_first_k
+   
+   #back from function
+   popq %r10
+   popq %r11
+   popq %r9
+   popq %r8
+   popq %rsi
+   popq %rdi
+
+   #back from function
+   movb %al, (%rdi)
+   
+   jmp Back_TEMP_HW2
+  
+      
+ Negate_HW2:
+
+   #save regitser
+   pushq %rdi
+   pushq %rsi
+   pushq %r8
+   pushq %r9
+   pushq %r11
+   pushq %r10 
+   
+   #ready parameters
+   xor %r14, %r14
+   movb (%rdi), %r14b
+   movq %r14, %rdi
+   movq %rdx, %rsi
+    
+   #call function
+   call negate_first_k
+   
+   #back from function
+   popq %r10
+   popq %r11
+   popq %r9
+   popq %r8
+   popq %rsi
+   popq %rdi
+
+   #back from function
+   movb %al, (%rdi)
+   
+   #go back and check the result
+   jmp Final_Check_HW2
+ 
+ Finish_Check_HW2:
+
+    movq %r9, %rax
+    
+    #conventions
+    movq %rbp, %rsp
+    
+    #back the orgnial values of the registers
+    pop %r14
+    popq %r13
+    popq %r12
+    popq %rbx
+    popq %rbp
+    
+    #go back to caller function
+    ret
